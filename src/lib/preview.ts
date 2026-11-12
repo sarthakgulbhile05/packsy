@@ -23,3 +23,10 @@ export const SIGNUPS_CLOSED = "New accounts open soon. Orbitly is in an early pu
  * the UI. Flip only in a reviewed change.
  */
 export const MARKETPLACE_OPEN: boolean = false;
+
+/**
+ * The Privacy Policy and Terms (/privacy, /terms) are drafts pending legal review. While false, both routes return
+ * 404 and nothing links to them; the draft text stays in the source for review. Flip only once approved
+ * documents replace the drafts, in a reviewed change that also adds them back to the footer.
+ */
+export const LEGAL_PAGES_PUBLISHED: boolean = false;

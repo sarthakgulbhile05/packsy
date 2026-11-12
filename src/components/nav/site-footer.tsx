@@ -20,21 +20,14 @@ const COLUMNS = [
       { href: "/profile", label: "Profile" },
     ],
   },
-  {
-    title: "Legal",
-    links: [
-      { href: "/privacy", label: "Privacy Policy (draft)" },
-      { href: "/terms", label: "Terms & Conditions (draft)" },
-    ],
-  },
 ];
 
 /** Footer for marketing pages: the same destinations as the header, grouped. */
 export function SiteFooter() {
   return (
     <footer className="border-t border-line bg-mist">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-12 sm:grid-cols-3 sm:px-8 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
-        <div className="sm:col-span-3 lg:col-span-1">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-12 sm:grid-cols-[1.5fr_1fr_1fr] sm:px-8">
+        <div>
           <OrbitlyLogo className="w-[84px]" priority={false} />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">Products travel with people, between India and the world. Early public preview.</p>
           <CurrencySelect className="mt-4" />

@@ -1,5 +1,7 @@
 // The draft Privacy Policy and Terms: they must read as drafts and must not invent facts or promises.
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const read = (p: string) => readFileSync(new URL(`../../src/${p}`, import.meta.url), "utf8");
@@ -30,10 +32,47 @@ describe("draft legal pages", () => {
     // Every mention of escrow or buyer protection is a denial.
     for (const line of all.split("\n").filter((l) => /escrow|buyer protection/i.test(l))) expect(line).toMatch(/doesn’t|isn’t|no /);
   });
+});
 
-  it("are linked from the footer", () => {
-    const footer = read("components/nav/site-footer.tsx");
-    expect(footer).toContain('href: "/privacy"');
-    expect(footer).toContain('href: "/terms"');
+// Until legal review is complete the drafts aren't public: both routes 404 and nothing links to them.
+describe("draft legal pages while unpublished", () => {
+  it("are switched off", async () => {
+    expect((await import("@/lib/preview")).LEGAL_PAGES_PUBLISHED).toBe(false);
+  });
+
+  it.each([
+    ["/privacy", () => import("@/app/privacy/page")],
+    ["/terms", () => import("@/app/terms/page")],
+  ])("%s returns 404 without rendering the draft", async (_route, load) => {
+    const Page = (await load()).default;
+    let thrown: unknown;
+    try {
+      Page();
+    } catch (e) {
+      thrown = e;
+    }
+    expect((thrown as { digest?: string })?.digest).toBe("NEXT_HTTP_ERROR_FALLBACK;404");
+  });
+
+  it("aren't linked from any page, navigation or footer", () => {
+    const linking: string[] = [];
+    const walk = (dir: string) => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        const path = join(dir, entry.name);
+        if (entry.isDirectory()) walk(path);
+        // The drafts may link to each other: they never render while unpublished.
+        else if (/\.tsx?$/.test(entry.name) && !/app\/(privacy|terms)\/|components\/legal\//.test(path)) {
+          if (/["'`]\/(privacy|terms)\b/.test(readFileSync(path, "utf8"))) linking.push(path); // a quoted path: href, Link, redirect
+        }
+      }
+    };
+    walk(fileURLToPath(new URL("../../src", import.meta.url)));
+    expect(linking).toEqual([]);
+  });
+
+  it("aren't in the sitemap", async () => {
+    const sitemap = (await import("@/app/sitemap")).default;
+    expect(sitemap().map((e) => new URL(e.url).pathname)).not.toEqual(expect.arrayContaining(["/privacy"]));
+    expect(sitemap().map((e) => new URL(e.url).pathname)).not.toEqual(expect.arrayContaining(["/terms"]));
   });
 });

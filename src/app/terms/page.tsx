@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { LegalPage, type LegalSection } from "@/components/legal/legal-page";
+import { notFound } from "next/navigation";
+import { LEGAL_PAGES_PUBLISHED } from "@/lib/preview";
 import { NOINDEX } from "@/lib/site";
 
 const TITLE = "Terms & Conditions";
@@ -278,6 +280,8 @@ const SECTIONS: LegalSection[] = [
 ];
 
 export default function TermsPage() {
+  // Drafts aren't public until legal review is complete: 404, with no draft text rendered.
+  if (!LEGAL_PAGES_PUBLISHED) notFound();
   return (
     <LegalPage
       title={TITLE}
