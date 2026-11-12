@@ -1,0 +1,219 @@
+@import "tailwindcss";
+
+/* Orbitly is light-only for now: `dark:` utilities only apply under a .dark class, which nothing sets. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-display); /* Poppins, from next/font in layout.tsx */
+}
+
+/* Orbitly design tokens: navy for structure, teal as the single accent, mist for app surfaces. */
+@theme {
+  --color-navy: #101c35;
+  --color-navy-hover: #1a2b50;
+  --color-navy-deep: #0a1329;
+  --color-ink: #33415c; /* body text on white */
+  --color-muted: #5b6b86; /* secondary text */
+  --color-subtle: #8a96ab; /* hints, captions */
+  --color-line: #e3e8f0; /* card borders, dividers */
+  --color-line-strong: #d6deea; /* input borders */
+  --color-mist: #f5f7fa; /* app background */
+  --color-teal: #20c7b5;
+  --color-teal-hover: #3ad3c3;
+  --color-teal-ink: #0f7a6e; /* teal text and links on white */
+  --color-teal-soft: #e7f7f5;
+  --color-success: #0b5e55;
+  --color-success-soft: #e3f6f1;
+  --color-info: #1f4fb0;
+  --color-info-soft: #eaf1fd;
+  --color-warning: #7a4d00;
+  --color-warning-soft: #fff4e0;
+  --color-danger: #b42318;
+  --color-danger-soft: #feeceb;
+  /* Warm paper for the human, storytelling moments; navy and teal stay the brand. */
+  --color-sand: #f7f3ec;
+  --color-sand-deep: #ece4d6;
+
+  --radius-control: 0.75rem;
+  --radius-card: 1.5rem;
+  --shadow-card: 0 1px 2px rgba(16, 28, 53, 0.04);
+  --shadow-raised: 0 16px 40px -20px rgba(16, 28, 53, 0.35);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-navy);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Auth scene motion: slow, mostly transform/opacity; staggered so nothing moves in lockstep. */
+.cinematic-scene .cs-clouds {
+  animation: cs-drift 28s ease-in-out infinite alternate;
+}
+.cinematic-scene .cs-halo {
+  animation: cs-breathe 9s ease-in-out infinite alternate;
+}
+.cinematic-scene .cs-cities {
+  animation: cs-breathe 11s ease-in-out -4s infinite alternate;
+}
+.cinematic-scene .cs-route-draw {
+  stroke-dashoffset: 0;
+  animation: cs-draw 2.6s cubic-bezier(0.45, 0, 0.2, 1) 0.3s both;
+}
+.cinematic-scene .cs-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cs-pulse 3.2s ease-out infinite;
+}
+.cinematic-scene .cs-pin-glow {
+  animation: cs-breathe 3.2s ease-in-out infinite alternate;
+}
+.cinematic-scene .cs-parcel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cs-float 6s ease-in-out infinite alternate;
+}
+.cinematic-scene .cs-plane {
+  animation: cs-fly 9s ease-in-out infinite alternate;
+}
+.cinematic-scene .cs-breathe {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: cs-breath 4.8s ease-in-out infinite alternate;
+}
+.auth-card {
+  animation: cs-card 7s ease-in-out infinite alternate;
+}
+
+@keyframes cs-drift {
+  to {
+    transform: translateX(22px);
+  }
+}
+@keyframes cs-breathe {
+  from {
+    opacity: 0.65;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes cs-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes cs-pulse {
+  from {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+@keyframes cs-float {
+  from {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  to {
+    transform: translateY(-12px) rotate(1.5deg);
+  }
+}
+@keyframes cs-fly {
+  to {
+    transform: translate(12px, -7px);
+  }
+}
+@keyframes cs-breath {
+  to {
+    transform: scaleY(1.008);
+  }
+}
+@keyframes cs-card {
+  to {
+    transform: translateY(-6px);
+  }
+}
+
+/* Homepage globe: a light travels each route into India; the destination pulses. */
+.hero-globe .hg-travel {
+  stroke-dasharray: 0.06 1.2;
+  stroke-dashoffset: 0.06;
+  animation: hg-travel 5.2s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+}
+.hero-globe .hg-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cs-pulse 3.2s ease-out infinite;
+}
+/* Trust section: a light travels the traveller → buyer route. */
+.trust-route .tr-travel {
+  stroke-dasharray: 0.12 1.3;
+  stroke-dashoffset: 0.12;
+  animation: hg-travel 3.6s cubic-bezier(0.45, 0, 0.3, 1) infinite;
+}
+@keyframes hg-travel {
+  to {
+    stroke-dashoffset: -1;
+  }
+}
+
+/* Homepage story: photos settle in as they scroll into view, where the browser supports scroll-driven
+   animation. Elsewhere, and with reduced motion, they simply show. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+@keyframes photo-settle {
+  from {
+    transform: scale(1.06);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: rise-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+  }
+  .hero-photo {
+    animation: photo-settle 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+}
+
+/* Reduced motion: a still, complete scene (route fully drawn, travelling light hidden). */
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-scene *,
+  .auth-card {
+    animation: none !important;
+  }
+  .cinematic-scene .cs-motion,
+  .hero-globe .hg-travel,
+  .hero-globe .hg-pulse,
+  .trust-route .tr-travel {
+    display: none;
+  }
+  .hero-globe * {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,10 @@
+# Never upload local secrets or tooling with a CLI deploy.
+.env
+.env.*
+!.env.example
+.claude
+.next
+node_modules
+coverage
+supabase/drafts
+*.tsbuildinfo
